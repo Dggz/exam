@@ -8,7 +8,7 @@ void main() => runApp(MyApp());
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final appTitle = 'Reminders';
+    final appTitle = 'Music';
 
     return MaterialApp(
       title: appTitle,
