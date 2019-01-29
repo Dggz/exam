@@ -1,7 +1,10 @@
 import 'dart:convert';
 
+import 'package:exam/bike.dart';
+import 'package:exam/bike_rent.dart';
 import 'package:exam/clerk_side.dart';
 import 'package:exam/client_side.dart';
+import 'package:exam/owner_screen.dart';
 import 'package:exam/song.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -9,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 String globalURL() {
-  return 'http://192.168.0.102:2224';
+  return 'http://192.168.42.231:2028';
 //  return 'http://192.168.0.102:8000/reminders/';
 //  return 'http://10.182.5.51:8000/reminders/';
 //  return 'http://10.182.5.51:8000/reminders/';
@@ -46,11 +49,12 @@ class HomePage extends StatelessWidget {
         children: <Widget>[
           RaisedButton(
             onPressed: () async {
-              final response = await http.get(globalURL() + "/genres");
-              final List<String> genres = new List<String>.from(json.decode(response.body));
+              final response = await http.get(globalURL() + "/bikes");
+              final parsed = json.decode(response.body);
+              List<Bike> bikes = parsed.map<Bike>((json) => Bike.fromJson(json)).toList();
               Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => ListViewGenres(genres: genres)),
+              MaterialPageRoute(builder: (context) => RentScreen(bikes: bikes)),
               );
             },
             child: new Text('Client')
@@ -59,18 +63,14 @@ class HomePage extends StatelessWidget {
             onPressed: () async {
               final response = await http.get(globalURL() + "/all");
               final parsed = json.decode(response.body);
-              List<Song> songs = parsed.map<Song>((json) => Song.fromJson(json)).toList();
-//              print(songs[1].title.compareTo(songs[0].title));
-//              print(songs[0].album);
-//              songs.sort((a, b) => a.album.compareTo(b.album));
-              songs.sort((a, b) => a.title.compareTo(b.title));
-//              songs.sort((a, b) => a.album.compareTo(b.album) + a.title.compareTo(b.title));
+              List<Bike> bikes = parsed.map<Bike>((json) => Bike.fromJson(json)).toList();
+              bikes.sort((a, b) => -a.type.compareTo(b.type));
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ClerkScreen(songs: songs)),
+                MaterialPageRoute(builder: (context) => OwnerScreen(bikes: bikes)),
               );
             },
-            child: new Text('Clerk')
+            child: new Text('Owner')
           ),
         ],
       ),

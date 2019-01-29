@@ -1,16 +1,15 @@
-import 'dart:convert';
 
-import 'package:exam/genre_songs.dart';
-import 'package:exam/home.dart';
-import 'package:exam/song.dart';
+import 'package:exam/bike.dart';
+import 'package:exam/bike_preview.dart';
+import 'package:exam/bike_view.dart';
+import 'package:exam/song_view.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 
-class ListViewGenres extends StatelessWidget {
-  final List<String> genres;
+class RentScreen extends StatelessWidget {
+  final List<Bike> bikes;
 
-  ListViewGenres({Key key, this.genres}) : super(key: key);
+  RentScreen({Key key, this.bikes}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +18,7 @@ class ListViewGenres extends StatelessWidget {
         title: Text('Bikes'),
       ),
       body: ListView.builder(
-          itemCount: genres.length,
+          itemCount: bikes.length,
           padding: const EdgeInsets.all(15.0),
           itemBuilder: (context, position) {
 
@@ -27,20 +26,25 @@ class ListViewGenres extends StatelessWidget {
               children: <Widget>[
                 Divider(height: 5.0),
                 ListTile(
-                  onTap: () async {
-                    final response = await http.get(globalURL() + "/bikes" + genres[position]);
-                    final parsed = json.decode(response.body);
-                    List<Song> songs = parsed.map<Song>((json) => Song.fromJson(json)).toList();
+                  onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => GenreScreen(songs: songs)),
+                      MaterialPageRoute(builder: (context) => BikePreviewScreen(bike: bikes[position])),
                     );
                   },
                   title: Text(
-                    '${genres[position]}',
+                    '${bikes[position].name}',
                     style: TextStyle(
                       fontSize: 22.0,
                       color: Colors.deepOrangeAccent,
+                    ),
+                  ),
+                  subtitle: Text(
+                    '${bikes[position].size + ', ' + bikes[position].type
+                    }',
+                    style: new TextStyle(
+                      fontSize: 18.0,
+                      fontStyle: FontStyle.italic,
                     ),
                   ),
                 ),
